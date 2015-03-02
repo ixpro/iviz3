@@ -43,6 +43,24 @@ var svgChart = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+  // d3.csv("data/data1.csv",type, function(loadedRows) {
+  //   allData = loadedRows;
+  //   //daylyData = frameData(24);
+
+  //   daylyData = frameDataHourly(allData);
+
+  //   //daylyData = loadedRows;
+
+  //   data = daylyData.shift();
+  //   $("#message").html(data[0].timestamp.toDateString());
+    
+  //   var convData = convertData(data);
+  //   loadData(convData);
+
+  //   timer = setInterval(function () {tickLoad()}, 500);
+  //   //allData = convertData(loadedRows);
+  //   //loadData(allData);
+  // });
 
 var allData;
 var allDataSliced;
@@ -65,7 +83,6 @@ var dataStep = "daily";
     allData = loadedRows;
 
     computeAvg(allData);
-
     line.interpolate("cardinal")
     area.interpolate("cardinal-closed");
 
@@ -76,7 +93,6 @@ var dataStep = "daily";
     currentDay = frameData(currentDay, "daily");
 
     var data = currentDay.shift();
-    
     timestamp = new Date(data[0].timestamp).toDateString();
     $("#message").html(timestamp);
     

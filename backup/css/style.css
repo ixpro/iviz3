@@ -1,0 +1,96 @@
+#hour-label {
+font-size: 12px;
+fill: gray;
+font-family: arial;
+}
+
+/*for now axes horizontal dashes disabled
+.axis line {
+  stroke: #000; 
+}*/
+
+#graphCotainer {
+  position: relative;
+}
+
+.axis path {
+  fill: none;
+  stroke: dimgrey;
+  stroke-width: 1px;
+  display:none;
+}
+
+.axis g text {
+  display: none; /*for now no text on axes*/
+
+}
+
+.axis text {
+  fill: dimgrey;
+}
+
+
+.axis + .axis g text {
+  display: none;
+}
+
+
+
+path {
+stroke: white;
+stroke-width: 0.3px;
+fill-opacity: 0.7;
+}
+
+body {
+background: #121314;
+color: white;
+font-family: 'Open Sans', sans-serif;
+}
+
+#wall {
+background-image: url('../images/background.jpg');
+background-position: center center;
+background-size: cover;
+height: auto;
+left: 0;
+min-height: 100%;
+min-width: 100%;
+position: absolute;
+top: 0;
+width: auto;
+z-index: -1;
+}
+
+#chart {
+z-index: 6;
+position: relative;
+height: 353px;
+}
+
+#frame {
+background-image: url('../images/chartBack.png');
+text-align: center;
+left: 0;
+right: 0;
+width: 404px;
+margin: 0px auto;
+background-repeat: no-repeat;
+background-size: contain;
+position: relative;
+}
+
+#pulse {
+  position: absolute;
+top: 0;
+z-index: 5;
+padding-left: 25px;
+}
+
+
+#message {
+position: absolute;
+right: 34px;
+color: dimgrey;
+font-size: 14px;
+}
