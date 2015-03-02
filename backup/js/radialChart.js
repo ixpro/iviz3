@@ -43,24 +43,7 @@ var svgChart = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-  // d3.csv("data/data1.csv",type, function(loadedRows) {
-  //   allData = loadedRows;
-  //   //daylyData = frameData(24);
-
-  //   daylyData = frameDataHourly(allData);
-
-  //   //daylyData = loadedRows;
-
-  //   data = daylyData.shift();
-  //   $("#message").html(data[0].timestamp.toDateString());
-    
-  //   var convData = convertData(data);
-  //   loadData(convData);
-
-  //   timer = setInterval(function () {tickLoad()}, 500);
-  //   //allData = convertData(loadedRows);
-  //   //loadData(allData);
-  // });
+ 
 
 var allData;
 var allDataSliced;
@@ -75,34 +58,52 @@ var avgColdWater   = 0;
 var period = 24; // 1 rotation on the graph;
 
 var dataStep = "daily";
+var daylyData =[];
 
-
-
-  d3.csv("data/data.csv",type, function(loadedRows) {
-
+ d3.csv("data/data1.csv",type, function(loadedRows) {
     allData = loadedRows;
+    
+    //daylyData = frameData(24);
 
-    computeAvg(allData);
-    line.interpolate("cardinal")
-    area.interpolate("cardinal-closed");
+    daylyData = frameData(allData);
 
-    currentDay = loadedRows.slice(0,period);
-    allDataSliced = loadedRows.slice(period);
+    //daylyData = loadedRows;
 
-    //currentDay = frameDataHourly(currentDay);
-    currentDay = frameData(currentDay, "daily");
-
-    var data = currentDay.shift();
-    timestamp = new Date(data[0].timestamp).toDateString();
-    $("#message").html(timestamp);
+    data = daylyData.shift();
     
     var convData = convertData(data);
     loadData(convData);
 
-    timer = setInterval(function () {tickLoad()}, 2000);
+    timer = setInterval(function () {tickLoad()}, 500);
     //allData = convertData(loadedRows);
     //loadData(allData);
   });
+
+  // d3.csv("data/data.csv",type, function(loadedRows) {
+
+  //   allData = loadedRows;
+
+  //   computeAvg(allData);
+  //   line.interpolate("cardinal")
+  //   area.interpolate("cardinal-closed");
+
+  //   currentDay = loadedRows.slice(0,period);
+  //   allDataSliced = loadedRows.slice(period);
+
+  //   //currentDay = frameDataHourly(currentDay);
+  //   currentDay = frameData(currentDay, "daily");
+
+  //   var data = currentDay.shift();
+  //   timestamp = new Date(data[0].timestamp).toDateString();
+  //   $("#message").html(timestamp);
+    
+  //   var convData = convertData(data);
+  //   loadData(convData);
+
+  //   timer = setInterval(function () {tickLoad()}, 2000);
+  //   //allData = convertData(loadedRows);
+  //   //loadData(allData);
+  // });
 
 
 
@@ -152,8 +153,10 @@ var dataStep = "daily";
         }
         currentDay = allDataSliced.slice(0,period);
         allDataSliced = allDataSliced.slice(period);
-        //currentDay = frameDataHourly(currentDay);
-        currentDay = frameData(currentDay, "daily"); 
+        // currentDay = frameData(currentDay, "daily"); 
+
+        currentDay = frameData(currentDay);
+
         data = currentDay.shift();
       }
 

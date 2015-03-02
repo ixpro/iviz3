@@ -1,7 +1,7 @@
         var  widthCircle = 350,
              heightCircle = 350;
 
-        var y = d3.scale.ordinal().domain(d3.range(1)).rangePoints([0, height]);
+        var y = d3.scale.ordinal().domain(d3.range(1)).rangePoints([0, heightCircle]);
 
         var counter = 0;
         var svgPulse = d3.select("#pulse")
