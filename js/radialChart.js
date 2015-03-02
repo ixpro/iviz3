@@ -100,7 +100,7 @@ d3.csv("data/data.csv",type, function(loadedRows) {
 
       timestamp = new Date(data[0].timestamp)
       timeStr = timestamp.formatDate("dd.MM.yyyy");
-      timeStr += "</br><strong>" + weekday[timestamp.getDay()] + "</strong>"
+      timeStr += "</br>" + weekday[timestamp.getDay()] 
       $("#message").html(timeStr);
     var convData = convertData(data);
     loadData(convData);
@@ -200,10 +200,10 @@ d3.csv("data/data.csv",type, function(loadedRows) {
           $("#waster").html("");
           changePulseColor("balanced");
         }
-        
+
       timestamp = new Date(data[0].timestamp)
       timeStr = timestamp.formatDate("dd.MM.yyyy");
-      timeStr += "</br><strong>" + weekday[timestamp.getDay()] + "</strong>"
+      timeStr += "</br>" + weekday[timestamp.getDay()] 
       $("#message").html(timeStr);
 
       var convData = convertData(data);
