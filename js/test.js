@@ -1,15 +1,14 @@
-        var margin = {
-            }, width = 350,
-                height = 350;
+        var  widthCircle = 350,
+             heightCircle = 350;
 
         var y = d3.scale.ordinal().domain(d3.range(1)).rangePoints([0, height]);
 
         var counter = 0;
         var svgPulse = d3.select("#pulse")
             .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("transform", "translate(" + width / 2 + "," + (height-20)/ 2 + ")");
+            .attr("width", widthCircle)
+            .attr("height", heightCircle)
+            .attr("transform", "translate(" + widthCircle / 2 + "," + heightCircle/ 2 + ")");
 
         // Define the gradient
         var gradient = svgPulse.append("svg:defs")
@@ -59,12 +58,12 @@
             .append("circle")
             .attr("stroke-width", 0)
             .attr("r", 150)
-            .attr('fill', "#121314")
-            .attr("cx", width / 2)
+            .attr('fill', "none")
+            .attr("cx", widthCircle / 2)
             .attr("cy", y);
 
 
-        function change(param){
+        function changePulseColor(param){
              //alert(param);
              // gradURL = settings[param].gradURL;
              // gradObj = settings[param].gradObj;

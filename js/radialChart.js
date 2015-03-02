@@ -53,14 +53,15 @@ var avgElectricity = 0;
 var avgWarmWater   = 0;
 var avgColdWater   = 0;
 
+var energyPrice = 1.2; //SEK per KW
+var coldWPrice  = 18; //SEK per m3
+var hotWPrice   = 48; //sek per m3
 
 var period = 24; // 1 rotation on the graph;
-
 var dataStep = "daily";
 
 
-
-  d3.csv("data/data.csv",type, function(loadedRows) {
+d3.csv("data/data.csv",type, function(loadedRows) {
 
     allData = loadedRows;
 
@@ -76,28 +77,66 @@ var dataStep = "daily";
     currentDay = frameData(currentDay, "daily");
 
     var data = currentDay.shift();
-    
+
+    var  exceder = getHighestConsumption(data);
+    if (typeof exceder !== 'undefined') {
+        // the variable is defined
+        $("#waster").html(exceder);
+        changePulseColor(exceder);
+    }else
+      {
+        $("#waster").html("");
+        changePulseColor("balanced");
+      }
+
     timestamp = new Date(data[0].timestamp).toDateString();
     $("#message").html(timestamp);
     
     var convData = convertData(data);
     loadData(convData);
 
-    timer = setInterval(function () {tickLoad()}, 2000);
-    //allData = convertData(loadedRows);
-    //loadData(allData);
+    timer = setInterval(function () {tickLoad()}, 7000);
   });
 
 
-
   function changeStep(step){
-
-
-
-
   }
 
 
+ function getHighestConsumption(rows){
+
+      //computing average dayly consumtion
+      var ElectricitySum = 0;
+      var WarmWaterSum   = 0;
+      var ColdWaterSum   = 0;
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+
+        ElectricitySum  += row.energy;
+        ColdWaterSum    += row.coldwater;
+        WarmWaterSum    += row.warmwater;
+      };
+
+     rowsAvgElectricity = ElectricitySum / rows.length;
+     rowsAvgWarmWater   = WarmWaterSum / rows.length;
+     rowsAvgColdWater   = ColdWaterSum / rows.length;
+
+     excededUtilities = [];
+
+     if (rowsAvgElectricity > avgElectricity) excededUtilities.push({'type' : 'electricity', 'value' : rowsAvgElectricity * energyPrice});
+     if (rowsAvgWarmWater   > avgWarmWater)   excededUtilities.push({'type' : 'warmWater', 'value':rowsAvgWarmWater * hotWPrice});
+     if (rowsAvgColdWater   > avgColdWater)   excededUtilities.push({'type' : 'coldWater', 'value':rowsAvgColdWater * coldWPrice});
+
+     if(excededUtilities.length > 0)
+        {
+             var theHighest = excededUtilities[0];
+             for (var i = 1; i < excededUtilities.length; i++) {
+                if (excededUtilities[i].value > theHighest.value) theHighest = excededUtilities[i];
+             };
+             return theHighest.type;
+        }
+  }
 
 
   function computeAvg (rows)
@@ -140,6 +179,17 @@ var dataStep = "daily";
         currentDay = frameData(currentDay, "daily"); 
         data = currentDay.shift();
       }
+        
+      var  exceder = getHighestConsumption(data);
+      if (typeof exceder !== 'undefined') {
+          // the variable is defined
+          $("#waster").html(exceder);
+          changePulseColor(exceder);
+      }else
+        {
+          $("#waster").html("");
+          changePulseColor("balanced");
+        }
 
       timestamp = new Date(data[0].timestamp).toDateString();
       $("#message").html(timestamp);
@@ -217,10 +267,6 @@ var dataStep = "daily";
    function convertData(rows)
     {
         var temp = [];
-        energyPrice = 0.69; //SEK per KW
-        coldWPrice  = 5; //SEK per m3
-        hotWPrice   = 8; //sek per m3
-
         for (var i = 0; i < rows.length; i++) {
 
           var row = rows[i];
