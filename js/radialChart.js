@@ -43,6 +43,15 @@ var svgChart = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+var weekday = new Array(7);
+weekday[0]=  "SUN";
+weekday[1] = "MON";
+weekday[2] = "TUE";
+weekday[3] = "WED";
+weekday[4] = "THU";
+weekday[5] = "FRI";
+weekday[6] = "SAT";
+
 
 var allData;
 var allDataSliced;
@@ -89,9 +98,10 @@ d3.csv("data/data.csv",type, function(loadedRows) {
         changePulseColor("balanced");
       }
 
-    timestamp = new Date(data[0].timestamp).formatDate("dd.MM.yyyy");
-    $("#message").html(timestamp);
-    
+      timestamp = new Date(data[0].timestamp)
+      timeStr = timestamp.formatDate("dd.MM.yyyy");
+      timeStr += "</br><strong>" + weekday[timestamp.getDay()] + "</strong>"
+      $("#message").html(timeStr);
     var convData = convertData(data);
     loadData(convData);
 
@@ -190,9 +200,12 @@ d3.csv("data/data.csv",type, function(loadedRows) {
           $("#waster").html("");
           changePulseColor("balanced");
         }
+        
+      timestamp = new Date(data[0].timestamp)
+      timeStr = timestamp.formatDate("dd.MM.yyyy");
+      timeStr += "</br><strong>" + weekday[timestamp.getDay()] + "</strong>"
+      $("#message").html(timeStr);
 
-      timestamp = new Date(data[0].timestamp).formatDate("dd.MM.yyyy");
-      $("#message").html(timestamp);
       var convData = convertData(data);
       updateChart(convData);
   }
