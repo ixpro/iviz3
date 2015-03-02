@@ -57,7 +57,7 @@
             .enter()
             .append("circle")
             .attr("stroke-width", 0)
-            .attr("r", 150)
+            .attr("r", 110)
             .attr('fill', "none")
             .attr("cx", widthCircle / 2)
             .attr("cy", y);
@@ -101,7 +101,7 @@
                     .duration(2000)
                     .attr("stroke-width", 0)
                     .attr('fill', gradURL)
-                    .attr("r", 150)
+                    .attr("r", 110)
                     .transition()
                     .duration(2000)
                     .attr("r", 80)
