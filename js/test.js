@@ -105,7 +105,7 @@
                     .attr("r", 150)
                     .transition()
                     .duration(2000)
-                    .attr("r", 120)
+                    .attr("r", 80)
                     .ease('sine')
                     .each("end", repeat);
             })();

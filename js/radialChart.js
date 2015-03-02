@@ -43,42 +43,106 @@ var svgChart = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+  // d3.csv("data/data1.csv",type, function(loadedRows) {
+  //   allData = loadedRows;
+  //   //daylyData = frameData(24);
+
+  //   daylyData = frameDataHourly(allData);
+
+  //   //daylyData = loadedRows;
+
+  //   data = daylyData.shift();
+  //   $("#message").html(data[0].timestamp.toDateString());
+    
+  //   var convData = convertData(data);
+  //   loadData(convData);
+
+  //   timer = setInterval(function () {tickLoad()}, 500);
+  //   //allData = convertData(loadedRows);
+  //   //loadData(allData);
+  // });
 
 var allData;
-var daylyData;
+var allDataSliced;
+var currentDay;
 var timer;
 
-  d3.csv("data/data1.csv",type, function(loadedRows) {
+var avgElectricity = 0;
+var avgWarmWater   = 0;
+var avgColdWater   = 0;
+
+
+var period = 24; // 1 rotation on the graph;
+
+  d3.csv("data/data.csv",type, function(loadedRows) {
+
     allData = loadedRows;
-    //daylyData = frameData(24);
 
-    daylyData = frameDataHourly(allData);
+    computeAvg(allData);
+  
+    currentDay = loadedRows.slice(0,period);
+    allDataSliced = loadedRows.slice(period);
 
-    //daylyData = loadedRows;
+    //currentDay = frameDataHourly(currentDay);
+    currentDay = frameData(24); 
 
-    data = daylyData.shift();
-    $("#message").html(data[0].timestamp.toDateString());
+    data = currentDay.shift();
+    timestamp = new Date(data[0].timestamp).toDateString();
+    $("#message").html(timestamp);
     
     var convData = convertData(data);
     loadData(convData);
 
-    timer = setInterval(function () {tickLoad()}, 500);
+    timer = setInterval(function () {tickLoad()}, 2000);
     //allData = convertData(loadedRows);
     //loadData(allData);
   });
 
 
-var dataFrame = [];
 
-  function tickLoad(data){
+  function computeAvg (rows)
+  {
 
-      data = daylyData.shift();
+    //computing average dayly consumtion
+    var ElectricitySum = 0;
+    var WarmWaterSum   = 0;
+    var ColdWaterSum   = 0;
+
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+
+      ElectricitySum  += row.energy;
+      ColdWaterSum    += row.coldwater;
+      WarmWaterSum    += row.warmwater;
+    };
+
+      avgElectricity = ElectricitySum / rows.length;
+      avgWarmWater   = WarmWaterSum / rows.length;
+      avgColdWater   = ColdWaterSum / rows.length;
+  }
+
+  function tickLoad(){
+
+      data = currentDay.shift();
+
       //$("#message").html(data[0].timestamp.toDateString());
 
+      // if day has finished, take the next day from allDataSliced
       if(!data) {
-        stopTimer();
-        return;
+
+        if(allDataSliced.length == 0){
+            stopTimer();
+            return;
+        }
+        currentDay = allDataSliced.slice(0,period);
+        allDataSliced = allDataSliced.slice(period);
+        //currentDay = frameDataHourly(currentDay);
+        currentDay = frameData(24); 
+        data = currentDay.shift();
       }
+
+      timestamp = new Date(data[0].timestamp).toDateString();
+      $("#message").html(timestamp);
       var convData = convertData(data);
       updateChart(convData);
   }
@@ -153,7 +217,6 @@ var dataFrame = [];
    function convertData(rows)
     {
         var temp = [];
-
         energyPrice = 0.69; //SEK per KW
         coldWPrice  = 5; //SEK per m3
         hotWPrice   = 8; //sek per m3
@@ -196,13 +259,15 @@ var dataFrame = [];
                 step = step.pop();
               }
 
-            step.push(dataFrame[i]);
+            var tmp = dataFrame[i].clone();
+            step.push(tmp);
             result.push(step);
 
             if(i % 23 == 0 ){
                 var fin = result.clone();
                 fin = fin.pop();
-                fin.push(dataFrame[0]);
+                tmp = dataFrame[0].clone();
+                fin.push(tmp);
                 result.push(fin);
             }
         };
@@ -226,20 +291,15 @@ var dataFrame = [];
         var day=[];
         for (var i = 0; i < allData.length; i++) {
 
-            if(i == allData.length -1) 
-              {
-                day.push(allData[i]);
-                days.push(day);
-            }else
+            if(((i % step == 0)&&(i!==0))||(i == allData.length -1))
             {
-              if(((i % step == 0)&&(i!==0))||(i == allData.length -1))
-              {
-                days.push(day);
-                day =[];
-              }
-
-              day.push(allData[i]);
+              day.push(allData[0]);
+              days.push(day);
+              day =[];
             }
+
+            day.push(allData[i]);
+            
         };
         return days;
     }
@@ -247,7 +307,7 @@ var dataFrame = [];
 
     function type(d) {
 
-      d.timestamp = new Date(d.time);
+      d.timestamp = d.time;
       d.time      = new Date(d.time).getHours();
       d.energy    = +d.energy;
       d.coldwater = +d.coldwater;
